@@ -25,7 +25,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	inputText := "This is my name, my name is bennett, you can call me bennett, hello world this is sample text written by bennett, hahahaha hello"
+	inputText := "hello world"
 
 	inputBinary := stringToBinary(inputText)
 	bounds := img.Bounds()
