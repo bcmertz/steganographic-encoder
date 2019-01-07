@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"image/png"
 	"log"
 	"math"
@@ -25,17 +26,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	inputText := "hello world"
+	inputText := "hello world this is bennett"
 
 	inputBinary := stringToBinary(inputText)
 	bounds := img.Bounds()
 	width, height := bounds.Max.X, bounds.Max.Y
 
+	new_image := image.NewRGBA(bounds)
 	// ravioli ravioli here is the formuoli: [ r - g - b - a ] - [ r - g - b - a ] - ...
-	var pixels [][]Pixel
 	counter := 0
 	for y := bounds.Min.Y; y < height; y++ {
-		var row []Pixel
 		for x := bounds.Min.X; x < width; x++ {
 			r, g, b, a := img.At(x, y).RGBA()
 			pixel := rgbaToBinaryPixel(int(r), int(g), int(b), int(a))
@@ -44,18 +44,17 @@ func main() {
 				pixel = leastBitEncoder(bits, pixel)
 			}
 			pixel = convertToRGBA(pixel)
-			row = append(row, pixel)
-			counter += 1
+			new_image.Set(x, y, color.RGBA{uint8(pixel.R), uint8(pixel.G), uint8(pixel.B), uint8(pixel.A)})
 		}
-		pixels = append(pixels, row)
 	}
 
 	// time to decode last bit by last bit!
 	// throwAwayCode // here it go for that debug life
-	lastBits := getLastBits(pixels)
-	str := binaryToString([]byte(lastBits))
-	fmt.Println(str)
+	//lastBits := getLastBits(pixels)
+	//str := binaryToString([]byte(lastBits))
 
+	output, _ := os.Create("newimage.png")
+	png.Encode(output, new_image)
 }
 
 func throwAwayCode() {
