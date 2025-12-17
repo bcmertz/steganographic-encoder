@@ -9,6 +9,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 		os.Exit(1)
 		log.Fatal(err)
 	}
+
 	defer reader.Close()
 
 	image.RegisterFormat("png", "png", png.Decode, png.DecodeConfig)
@@ -26,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	inputText := "hello world this is bennett"
+	inputText := "hello world this is me"
 
 	inputBinary := stringToBinary(inputText)
 	bounds := img.Bounds()
@@ -64,10 +66,10 @@ func throwAwayCode() {
 	//dix := []Pixel{Pixel{11010110, 11011100, 00110110, 00011010}, Pixel{11010110, 00111000, 10101000, 11001110}, Pixel{10101010, 11100010, 11001111, 10101010}, Pixel{10000101, 11000011, 11111110, 00000000}}
 	// implementation works for every 8 bit pixel the same r=g=b=a, idk about pixel = pixel where r=/=g=/=b=/=a but this indicates a bug in the encoder
 	dix := []Pixel{
-		Pixel{1 * 257, 1 * 257, 2 * 257, 2 * 257},
-		Pixel{2 * 257, 2 * 257, 2 * 257, 2 * 257},
-		Pixel{2 * 257, 2 * 257, 2 * 257, 2 * 257},
-		Pixel{2 * 257, 2 * 257, 2 * 257, 2 * 257}}
+		{1 * 257, 1 * 257, 2 * 257, 2 * 257},
+		{2 * 257, 2 * 257, 2 * 257, 2 * 257},
+		{2 * 257, 2 * 257, 2 * 257, 2 * 257},
+		{2 * 257, 2 * 257, 2 * 257, 2 * 257}}
 
 	dixels = append(dixels, dix)
 	for i, pixl := range dixels[0] {
@@ -109,18 +111,18 @@ func lastBit(x int) string {
 
 // WORKS
 func getLastBits(pixels [][]Pixel) string {
-	lastBits := ""
+	var lastBits strings.Builder
 	for i := 0; i < len(pixels); i++ {
 		for j := 0; j < len(pixels[i]); j++ {
 			p := pixels[i][j]
 			pixel := rgbaToBinaryPixel(p.R, p.G, p.B, p.A)
-			lastBits += lastBit(pixel.R)
-			lastBits += lastBit(pixel.G)
-			lastBits += lastBit(pixel.B)
-			lastBits += lastBit(pixel.A)
+			lastBits.WriteString(lastBit(pixel.R))
+			lastBits.WriteString(lastBit(pixel.G))
+			lastBits.WriteString(lastBit(pixel.B))
+			lastBits.WriteString(lastBit(pixel.A))
 		}
 	}
-	return lastBits
+	return lastBits.String()
 }
 
 // WORKS
